@@ -19,9 +19,9 @@ from flwr.common import Context
 # Privacy hyperparameters
 MAX_GRAD_NORM = 1.2
 DELTA = 1e-5
-BATCH_SIZE = 32
-MAX_PHYSICAL_BATCH_SIZE = 32
-EPOCHS = 5
+BATCH_SIZE = 16
+MAX_PHYSICAL_BATCH_SIZE = 16
+EPOCHS = 3
 
 # Paths
 train_csv_path = "train.csv"
@@ -30,13 +30,18 @@ test_csv_path = "test.csv"
 test_img_dir = "test_images"
 save_model_path = "densenet_Opacus_epsilon_more_info.pth"
 log_file = "opacus_densenet_epsilon_training_log_more_info.txt"
+round_accuracy_log_file = "federated_round_accuracies.txt"
 
 # Federated learning parameters
 NUM_CLIENTS = 3  # Number of clients
-EPSILON_VALUES = [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
-w1, w2 = 0.7, 0.3  # Weights for optimal epsilon calculation
+EPSILON_VALUES = [ 0.1,0.4, 11.5, 10.0]
+w1, w2 = 0.5, 0.5  # Weights for optimal epsilon calculation
 
-# Custom Label Encoder for multiple columns
+# Ensure log files exist
+open(log_file, "w").close()
+open(round_accuracy_log_file, "w").close()
+
+
 class MultiLabelEncoder:
     def __init__(self):
         self.label_encoders = {}
@@ -90,40 +95,13 @@ class SkinLesionDataset(Dataset):
 
         return image, labels
 
-# # DenseNet model with task-specific heads
-# class DenseNet121(nn.Module):
-#     def __init__(self, num_classes_super_class=2, num_classes_malignancy=3, num_classes_main_class_1=7,
-#                  num_classes_main_class_2=15, num_classes_sub_class=33):
-#         super(DenseNet121, self).__init__()
-#
-#         # Load pre-trained DenseNet-121
-#         self.base_model = densenet121(weights=DenseNet121_Weights.DEFAULT)
-#         self.base_model.classifier = nn.Linear(self.base_model.classifier.in_features, 1024)
-#
-#         # Task-specific heads
-#         self.fc_super_class = nn.Linear(1024, num_classes_super_class)
-#         self.fc_malignancy = nn.Linear(1024, num_classes_malignancy)
-#         self.fc_main_class_1 = nn.Linear(1024, num_classes_main_class_1)
-#         self.fc_main_class_2 = nn.Linear(1024, num_classes_main_class_2)
-#         self.fc_sub_class = nn.Linear(1024, num_classes_sub_class)
-#
-#     def forward(self, x):
-#         x = self.base_model(x)
-#
-#         # Outputs for each task
-#         out_super_class = self.fc_super_class(x)
-#         out_malignancy = self.fc_malignancy(x)
-#         out_main_class_1 = self.fc_main_class_1(x)
-#         out_main_class_2 = self.fc_main_class_2(x)
-#         out_sub_class = self.fc_sub_class(x)
-#
-#         return {
-#             "super_class": out_super_class,
-#             "malignancy": out_malignancy,
-#             "main_class_1": out_main_class_1,
-#             "main_class_2": out_main_class_2,
-#             "sub_class": out_sub_class,
-#         }
+# Federated client implementation
+# Utility function for logging
+def log_message(message, file_path, mode="a"):
+    """Log a message to both the console and a specified log file."""
+    print(message)  # Print to console
+    with open(file_path, mode) as f:
+        f.write(message + "\n")  # Append message to log file
 
 # Federated client implementation
 class FlowerClient(fl.client.NumPyClient):
@@ -139,7 +117,7 @@ class FlowerClient(fl.client.NumPyClient):
 
         # Privacy engine setup
         self.privacy_engine = PrivacyEngine()
-        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=1e-3)
+        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=8.672307011698221e-05)
         self.model, self.optimizer, self.train_loader = self.privacy_engine.make_private_with_epsilon(
             module=self.model,
             optimizer=self.optimizer,
@@ -154,24 +132,28 @@ class FlowerClient(fl.client.NumPyClient):
             for task in ["super_class", "malignancy", "main_class_1", "main_class_2", "sub_class"]
         }
 
-    def get_parameters(self, config=None):  # Accept the optional 'config' argument
-        """
-        Return the model's parameters as a list of NumPy arrays.
-        """
+    def get_parameters(self, config=None):
+
         return [val.cpu().numpy() for _, val in self.model.state_dict().items()]
 
     def set_parameters(self, parameters):
+
         params_dict = zip(self.model.state_dict().keys(), parameters)
+
         state_dict = {k: torch.tensor(v) for k, v in params_dict}
+
         self.model.load_state_dict(state_dict, strict=True)
 
     def fit(self, parameters, config):
-        print(f"Starting training on client with epsilon {self.epsilon}")
+        log_message(f"Starting training on client with epsilon {self.epsilon}", log_file)
         self.set_parameters(parameters)
 
         for epoch in range(EPOCHS):
-            print(f"Epoch {epoch + 1}/{EPOCHS} on client...")
+            log_message(f"Epoch {epoch + 1}/{EPOCHS} on client...", log_file)
             self.model.train()
+            total_train_loss = 0
+            total_batches = 0
+
             with BatchMemoryManager(
                     data_loader=self.train_loader,
                     max_physical_batch_size=MAX_PHYSICAL_BATCH_SIZE,
@@ -189,73 +171,69 @@ class FlowerClient(fl.client.NumPyClient):
                     loss.backward()
                     self.optimizer.step()
 
+                    total_train_loss += loss.item()
+                    total_batches += 1
+
                     if i % 10 == 0:
                         print(f"  Batch {i}: Loss = {loss.item():.4f}")
 
-        print(f"Training completed for epsilon {self.epsilon}.")
+            avg_train_loss = total_train_loss / total_batches
+            log_message(f"  Epoch {epoch + 1} Training Loss: {avg_train_loss:.4f}", log_file)
+
+            # Perform validation after each epoch
+            self.model.eval()
+            total_correct = 0
+            total_samples = 0
+
+            with torch.no_grad():
+                for images, labels in self.val_loader:
+                    images = images.to(self.device)
+                    labels = {key: value.to(self.device) for key, value in labels.items()}
+
+                    outputs = self.model(images)
+                    for task in outputs.keys():
+                        preds = outputs[task].argmax(dim=1)
+                        total_correct += (preds == labels[task]).sum().item()
+                        total_samples += labels[task].size(0)
+
+            val_accuracy = total_correct / total_samples
+            log_message(f"  Epoch {epoch + 1} Validation Accuracy: {val_accuracy:.4f}", log_file)
+
+        log_message(f"Training completed for epsilon {self.epsilon}.", log_file)
         return self.get_parameters(), len(self.train_loader.dataset), {}
 
     def evaluate(self, parameters, config):
-        print("Evaluating model...")
+        log_message("Evaluating model...", log_file)
         self.set_parameters(parameters)
         self.model.eval()
 
-        val_loss, f1_scores = 0, []
+        total_correct = 0
+        total_samples = 0
+
         with torch.no_grad():
-            for i, (images, labels) in enumerate(self.val_loader, 1):
+            for images, labels in self.val_loader:
                 images = images.to(self.device)
                 labels = {key: value.to(self.device) for key, value in labels.items()}
 
                 outputs = self.model(images)
-                loss = sum(
-                    [self.criterion_dict[task](outputs[task], labels[task]) for task in outputs.keys()]
-                )
-                val_loss += loss.item()
-
                 for task in outputs.keys():
-                    preds = outputs[task].argmax(dim=1).cpu().numpy()
-                    truths = labels[task].cpu().numpy()
-                    f1_scores.append(f1_score(truths, preds, average="weighted"))
+                    preds = outputs[task].argmax(dim=1)
+                    total_correct += (preds == labels[task]).sum().item()
+                    total_samples += labels[task].size(0)
 
-                if i % 10 == 0:
-                    print(f"  Batch {i}: Loss = {loss.item():.4f}")
+        accuracy = total_correct / total_samples
+        log_message(f"Evaluation accuracy: {accuracy:.4f}", log_file)
+        return 0.0, total_samples, {"accuracy": accuracy}
 
-        print("Evaluation completed.")
-        avg_f1_score = sum(f1_scores) / len(f1_scores)
-        return float(val_loss / len(self.val_loader)), len(self.val_loader.dataset), {"f1_score": avg_f1_score}
-
-
-# Federated learning setup
 # Federated learning setup
 def federated(train_loaders, val_loaders, epsilon_values, num_clients, device):
-    """
-    Sets up and runs federated learning with differential privacy.
-
-    Args:
-        train_loaders (list): List of DataLoader objects for each client's training data.
-        val_loaders (list): List of DataLoader objects for each client's validation data.
-        epsilon_values (list): List of privacy budget (epsilon) values for each client.
-        num_clients (int): Number of clients participating in federated learning.
-        device (torch.device): Device to use for computation (CPU or GPU).
-    """
-
     def client_fn(client_id: str):
-        """
-        Create a Flower client based on the client ID.
-
-        Args:
-            client_id (str): Client ID as a string (e.g., "0", "1", ...).
-
-        Returns:
-            FlowerClient: The Flower federated learning client.
-        """
-        client_index = int(client_id)  # Convert client ID to integer
+        client_index = int(client_id)
         train_loader = train_loaders[client_index]
         val_loader = val_loaders[client_index]
         epsilon = EPSILON_VALUES[client_index]
         return FlowerClient(train_loader, val_loader, device, epsilon)
 
-    # Set up the federated learning strategy
     strategy = fl.server.strategy.FedAvg(
         fraction_fit=1.0,
         fraction_evaluate=1.0,
@@ -264,12 +242,26 @@ def federated(train_loaders, val_loaders, epsilon_values, num_clients, device):
         min_available_clients=num_clients,
     )
 
-    fl.simulation.start_simulation(
+    global_model = DenseNet121().to(device)
+
+    # Simulation with logging per round
+    history = fl.simulation.start_simulation(
         client_fn=client_fn,
         num_clients=num_clients,
-        config=fl.server.ServerConfig(num_rounds=2),
+        config=fl.server.ServerConfig(num_rounds=3),
         strategy=strategy,
     )
+
+    # Log metrics for each round
+    with open(round_accuracy_log_file, "a") as f:
+        for server_round, metrics in enumerate(history.metrics_centralized.get("accuracy", []), start=1):
+            log_message(f"Round {server_round}: Accuracy = {metrics:.4f}", round_accuracy_log_file)
+            f.write(log_message)
+
+    # Save the final global model
+    log_message(f"Saving global model to {save_model_path}...", log_file)
+    torch.save(global_model.state_dict(), save_model_path)
+    log_message("Model saved successfully.", log_file)
 
 
 
@@ -277,24 +269,15 @@ def federated(train_loaders, val_loaders, epsilon_values, num_clients, device):
 if __name__ == "__main__":
     print("Starting Federated Learning Script...")
 
-    # Check device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"Using device: {device}")
-
-    # Load and preprocess the data
-    print("Loading training and testing data...")
     train_df = pd.read_csv(train_csv_path)
     test_df = pd.read_csv(test_csv_path)
 
-    # Encode labels
-    print("Encoding labels...")
     encoder = MultiLabelEncoder()
     columns_to_encode = ["super_class", "malignancy", "main_class_1", "main_class_2", "sub_class"]
     train_df = encoder.fit_transform(train_df, columns_to_encode)
     test_df = encoder.transform(test_df, columns_to_encode)
 
-    # Define data transformations
-    print("Defining data transformations...")
     train_transform = transforms.Compose([
         transforms.Resize((224, 224)),
         transforms.RandomHorizontalFlip(),
@@ -308,18 +291,14 @@ if __name__ == "__main__":
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
 
-    # Prepare datasets
-    print("Preparing datasets...")
     full_dataset = SkinLesionDataset(train_df, train_img_dir, transform=train_transform)
 
-    # Splitting datasets among clients
     num_samples = len(full_dataset)
     split_sizes = [num_samples // NUM_CLIENTS] * NUM_CLIENTS
     split_sizes[-1] += num_samples % NUM_CLIENTS
     client_data_splits = torch.utils.data.random_split(full_dataset, split_sizes)
     print(f"Dataset split into {NUM_CLIENTS} clients.")
 
-    # Create DataLoaders
     train_loaders = [
         DataLoader(client_split, batch_size=BATCH_SIZE, shuffle=True)
         for client_split in client_data_splits
@@ -330,8 +309,5 @@ if __name__ == "__main__":
     ]
 
     print("DataLoaders created. Starting federated learning...")
-
-    # Run federated learning
     federated(train_loaders, val_loaders, EPSILON_VALUES, NUM_CLIENTS, device)
     print("Federated learning completed.")
-
