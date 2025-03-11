@@ -1,0 +1,204 @@
+Starting federated learning with dynamic data fractions...
+Initial round - Using default epsilon: 0.5
+Privacy engine initialization time: 0.44 seconds
+Privacy engine initialization time: 0.44 seconds
+Privacy engine initialization time: 0.45 seconds
+Client training - Epoch 1: Loss 13.6967, Avg Accuracy 0.4222, Epsilon 0.5
+Client training - Epoch 1: Loss 15.4630, Avg Accuracy 0.4255, Epsilon 0.5
+Client training - Epoch 1: Loss 12.8585, Avg Accuracy 0.3614, Epsilon 0.5
+Client training - Epoch 2: Loss 13.6623, Avg Accuracy 0.4400, Epsilon 0.5
+Client training round 1: Total training time: 31.72 seconds
+Client training round 1: CPU time: 31.56 seconds
+Client training round 1: Memory usage: 1496.23 MB
+Client training - Epoch 2: Loss 12.7966, Avg Accuracy 0.2163, Epsilon 0.5
+Client training round 1: Total training time: 30.92 seconds
+Client training round 1: CPU time: 30.62 seconds
+Client training round 1: Memory usage: 1465.26 MB
+Client training - Epoch 2: Loss 12.6806, Avg Accuracy 0.4700, Epsilon 0.5
+Client training round 1: Total training time: 33.15 seconds
+Client training round 1: CPU time: 33.16 seconds
+Client training round 1: Memory usage: 1481.71 MB
+Epsilon 0.5 - Val Acc: 0.6113
+Epsilon 0.5 - evaluation time: 219.37 seconds
+Epsilon 1 - Val Acc: 0.6466
+Epsilon 1 - evaluation time: 217.04 seconds
+Epsilon 2.0 - Val Acc: 0.6417
+Epsilon 2.0 - evaluation time: 216.35 seconds
+Epsilon 3.0 - Val Acc: 0.5981
+Epsilon 3.0 - evaluation time: 215.66 seconds
+Test Metrics after Round: Acc 0.5960
+Total epsilon selection time: 881.22 seconds
+Epsilon selection: Memory usage: 2441.61 MB
+Round 1 - Selected epsilon: 1
+Privacy engine initialization time: 0.73 seconds
+Privacy engine initialization time: 0.74 seconds
+Privacy engine initialization time: 0.84 seconds
+Client training - Epoch 1: Loss 10.0691, Avg Accuracy 0.6192, Epsilon 1.0
+Client training - Epoch 1: Loss 11.9185, Avg Accuracy 0.5273, Epsilon 1.0
+Client training - Epoch 1: Loss 10.7075, Avg Accuracy 0.6739, Epsilon 1.0
+Client training - Epoch 2: Loss 9.9531, Avg Accuracy 0.6239, Epsilon 1.0
+Client training round 2: Total training time: 43.41 seconds
+Client training round 2: CPU time: 43.12 seconds
+Client training round 2: Memory usage: 1471.11 MB
+Client training - Epoch 2: Loss 9.3926, Avg Accuracy 0.6058, Epsilon 1.0
+Client training round 2: Total training time: 47.23 seconds
+Client training round 2: CPU time: 47.05 seconds
+Client training round 2: Memory usage: 1400.74 MB
+Client training - Epoch 2: Loss 8.5156, Avg Accuracy 0.7659, Epsilon 1.0
+Client training round 2: Total training time: 52.01 seconds
+Client training round 2: CPU time: 51.75 seconds
+Client training round 2: Memory usage: 1389.25 MB
+Epsilon 0.5 - Val Acc: 0.6637
+Epsilon 0.5 - evaluation time: 218.44 seconds
+Epsilon 1 - Val Acc: 0.5858
+Epsilon 1 - evaluation time: 224.06 seconds
+Epsilon 2.0 - Val Acc: 0.6396
+Epsilon 2.0 - evaluation time: 212.59 seconds
+Epsilon 3.0 - Val Acc: 0.6451
+Epsilon 3.0 - evaluation time: 219.37 seconds
+Test Metrics after Round: Acc 0.6696
+Total epsilon selection time: 887.12 seconds
+Epsilon selection: Memory usage: 2439.59 MB
+Round 2 - Selected epsilon: 0.5
+Privacy engine initialization time: 0.45 seconds
+Privacy engine initialization time: 0.41 seconds
+Privacy engine initialization time: 0.54 seconds
+Client training - Epoch 1: Loss 6.0513, Avg Accuracy 0.7506, Epsilon 0.5
+Client training - Epoch 1: Loss 8.9798, Avg Accuracy 0.6198, Epsilon 0.5
+Client training - Epoch 1: Loss 9.6484, Avg Accuracy 0.6721, Epsilon 0.5
+Client training - Epoch 2: Loss 9.2445, Avg Accuracy 0.7853, Epsilon 0.5
+Client training round 3: Total training time: 58.85 seconds
+Client training round 3: CPU time: 58.64 seconds
+Client training round 3: Memory usage: 1288.67 MB
+Client training - Epoch 2: Loss 8.7779, Avg Accuracy 0.6634, Epsilon 0.5
+Client training round 3: Total training time: 63.90 seconds
+Client training round 3: CPU time: 63.44 seconds
+Client training round 3: Memory usage: 1253.71 MB
+Client training - Epoch 2: Loss 14.0607, Avg Accuracy 0.6589, Epsilon 0.5
+Client training round 3: Total training time: 66.15 seconds
+Client training round 3: CPU time: 65.78 seconds
+Client training round 3: Memory usage: 1268.28 MB
+Epsilon 0.5 - Val Acc: 0.5028
+Epsilon 0.5 - evaluation time: 220.49 seconds
+Epsilon 1 - Val Acc: 0.6649
+Epsilon 1 - evaluation time: 215.97 seconds
+Epsilon 2.0 - Val Acc: 0.6598
+Epsilon 2.0 - evaluation time: 204.96 seconds
+Epsilon 3.0 - Val Acc: 0.6649
+Epsilon 3.0 - evaluation time: 210.50 seconds
+Test Metrics after Round: Acc 0.6696
+Total epsilon selection time: 864.34 seconds
+Epsilon selection: Memory usage: 2457.13 MB
+Round 3 - Selected epsilon: 1
+Privacy engine initialization time: 0.65 seconds
+Privacy engine initialization time: 0.68 seconds
+Privacy engine initialization time: 0.93 seconds
+Client training - Epoch 1: Loss 12.2571, Avg Accuracy 0.6555, Epsilon 1.0
+Client training - Epoch 1: Loss 8.8087, Avg Accuracy 0.7156, Epsilon 1.0
+Client training - Epoch 1: Loss 10.5552, Avg Accuracy 0.6215, Epsilon 1.0
+Client training - Epoch 2: Loss 12.9473, Avg Accuracy 0.6365, Epsilon 1.0
+Client training round 4: Total training time: 81.86 seconds
+Client training round 4: CPU time: 81.38 seconds
+Client training round 4: Memory usage: 1437.32 MB
+Client training - Epoch 2: Loss 12.1848, Avg Accuracy 0.7131, Epsilon 1.0
+Client training round 4: Total training time: 83.60 seconds
+Client training round 4: CPU time: 83.19 seconds
+Client training round 4: Memory usage: 1914.95 MB
+Client training - Epoch 2: Loss 11.6806, Avg Accuracy 0.5694, Epsilon 1.0
+Client training round 4: Total training time: 87.07 seconds
+Client training round 4: CPU time: 86.64 seconds
+Client training round 4: Memory usage: 1781.00 MB
+Epsilon 0.5 - Val Acc: 0.6292
+Epsilon 0.5 - evaluation time: 220.17 seconds
+Epsilon 1 - Val Acc: 0.6232
+Epsilon 1 - evaluation time: 216.39 seconds
+Epsilon 2.0 - Val Acc: 0.6596
+Epsilon 2.0 - evaluation time: 222.09 seconds
+Epsilon 3.0 - Val Acc: 0.6634
+Epsilon 3.0 - evaluation time: 209.72 seconds
+Test Metrics after Round: Acc 0.6696
+Total epsilon selection time: 880.89 seconds
+Epsilon selection: Memory usage: 1680.80 MB
+Round 4 - Selected epsilon: 2.0
+Privacy engine initialization time: 1.20 seconds
+Privacy engine initialization time: 1.26 seconds
+Privacy engine initialization time: 1.25 seconds
+Client training - Epoch 1: Loss 10.2920, Avg Accuracy 0.7168, Epsilon 2.0
+Client training - Epoch 1: Loss 9.9728, Avg Accuracy 0.7048, Epsilon 2.0
+Client training - Epoch 1: Loss 12.5753, Avg Accuracy 0.6523, Epsilon 2.0
+Client training - Epoch 2: Loss 14.7201, Avg Accuracy 0.6854, Epsilon 2.0
+Client training round 5: Total training time: 95.77 seconds
+Client training round 5: CPU time: 94.98 seconds
+Client training round 5: Memory usage: 1411.91 MB
+Client training - Epoch 2: Loss 11.4993, Avg Accuracy 0.6525, Epsilon 2.0
+Client training round 5: Total training time: 100.45 seconds
+Client training round 5: CPU time: 99.97 seconds
+Client training round 5: Memory usage: 1538.88 MB
+Client training - Epoch 2: Loss 15.1489, Avg Accuracy 0.6539, Epsilon 2.0
+Client training round 5: Total training time: 103.19 seconds
+Client training round 5: CPU time: 102.39 seconds
+Client training round 5: Memory usage: 1379.07 MB
+Epsilon 0.5 - Val Acc: 0.5414
+Epsilon 0.5 - evaluation time: 217.34 seconds
+Epsilon 1 - Val Acc: 0.5923
+Epsilon 1 - evaluation time: 218.24 seconds
+Epsilon 2.0 - Val Acc: 0.6441
+Epsilon 2.0 - evaluation time: 222.80 seconds
+Epsilon 3.0 - Val Acc: 0.6586
+Epsilon 3.0 - evaluation time: 216.81 seconds
+Test Metrics after Round: Acc 0.6338
+Total epsilon selection time: 887.60 seconds
+Epsilon selection: Memory usage: 1813.50 MB
+Round 5 - Selected epsilon: 2.0
+Privacy engine initialization time: 1.27 seconds
+Privacy engine initialization time: 1.28 seconds
+Privacy engine initialization time: 1.29 seconds
+Client training - Epoch 1: Loss 10.8644, Avg Accuracy 0.6889, Epsilon 2.0
+Client training - Epoch 1: Loss 11.8151, Avg Accuracy 0.7231, Epsilon 2.0
+Client training - Epoch 1: Loss 13.9496, Avg Accuracy 0.5144, Epsilon 2.0
+Client training - Epoch 2: Loss 14.2524, Avg Accuracy 0.7333, Epsilon 2.0
+Client training round 6: Total training time: 112.01 seconds
+Client training round 6: CPU time: 111.50 seconds
+Client training round 6: Memory usage: 1402.42 MB
+Client training - Epoch 2: Loss 11.0488, Avg Accuracy 0.7141, Epsilon 2.0
+Client training round 6: Total training time: 115.87 seconds
+Client training round 6: CPU time: 115.05 seconds
+Client training round 6: Memory usage: 2043.67 MB
+Client training - Epoch 2: Loss 15.4241, Avg Accuracy 0.5612, Epsilon 2.0
+Client training round 6: Total training time: 119.73 seconds
+Client training round 6: CPU time: 118.81 seconds
+Client training round 6: Memory usage: 1436.90 MB
+Epsilon 0.5 - Val Acc: 0.6543
+Epsilon 0.5 - evaluation time: 221.87 seconds
+Epsilon 1 - Val Acc: 0.5945
+Epsilon 1 - evaluation time: 218.66 seconds
+Epsilon 2.0 - Val Acc: 0.5011
+Epsilon 2.0 - evaluation time: 221.26 seconds
+Epsilon 3.0 - Val Acc: 0.6647
+Epsilon 3.0 - evaluation time: 219.04 seconds
+Test Metrics after Round: Acc 0.6696
+Total epsilon selection time: 893.41 seconds
+Epsilon selection: Memory usage: 1625.13 MB
+Round 6 - Selected epsilon: 0.5
+Privacy engine initialization time: 0.43 seconds
+Privacy engine initialization time: 0.42 seconds
+Privacy engine initialization time: 0.45 seconds
+Client training - Epoch 1: Loss 14.4176, Avg Accuracy 0.7110, Epsilon 0.5
+Client training - Epoch 1: Loss 16.1510, Avg Accuracy 0.6435, Epsilon 0.5
+Client training - Epoch 1: Loss 16.5060, Avg Accuracy 0.5709, Epsilon 0.5
+Client training - Epoch 2: Loss 14.1311, Avg Accuracy 0.7435, Epsilon 0.5
+Client training round 7: Total training time: 131.20 seconds
+Client training round 7: CPU time: 130.45 seconds
+Client training round 7: Memory usage: 1425.78 MB
+Client training - Epoch 2: Loss 14.0309, Avg Accuracy 0.6782, Epsilon 0.5
+Client training round 7: Total training time: 138.31 seconds
+Client training round 7: CPU time: 137.38 seconds
+Client training round 7: Memory usage: 1365.82 MB
+Client training - Epoch 2: Loss 17.4128, Avg Accuracy 0.5476, Epsilon 0.5
+Client training round 7: Total training time: 140.79 seconds
+Client training round 7: CPU time: 140.16 seconds
+Client training round 7: Memory usage: 1397.89 MB
+Epsilon 0.5 - Val Acc: 0.6092
+Epsilon 0.5 - evaluation time: 224.87 seconds
+Epsilon 1 - Val Acc: 0.5551
+Epsilon 1 - evaluation time: 216.47 seconds
